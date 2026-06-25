@@ -9,5 +9,5 @@ public class Hotel
     
     public int CountryId { get; set; }
     
-    public Country Country { get; set; }
+    public Country? Country { get; set; }
 }
