@@ -7,28 +7,30 @@ Accept: application/json
 GET http://localhost:5063/api/Hotels
 
 ###
-POST http://localhost:5063/api/Hotels
+POST {{BookingHotel_HostAddress}}/api/Hotels
 Content-Type: application/json
 
 {
-  "Id" : 3, 
   "Name" : "Masoud",
   "Address" : "Gorgan",
-  "Rating" : 4.1
+  "Rating" : 4.1,
+  "CountryId" : 1
 }
 
 ###
 GET http://localhost:5063/api/Hotels/1
 
 ###
-@id=3
+@id=2
 PUT http://localhost:5063/api/Hotels/{{id}}
 Content-Type: application/json
 
 {
-    "Name" : "Masoud2",
-    "Address" : "Gorgan2",
-    "Rating" : 4.1
+  "Id" : 2,
+    "Name" : "Azin",
+    "Address" : "Gorgan",
+    "Rating" : 4.2,
+  "CountryId" : 1
 }
 
 ###
@@ -42,3 +44,5 @@ Content-Type: application/json
   "Name" : "Iran",
   "ShortName" : "IR"
 }
+###
+GET {{BookingHotel_HostAddress}}/api/Country
