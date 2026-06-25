@@ -1,9 +1,14 @@
+using BookingHotel.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+ var connectionString = builder.Configuration.GetConnectionString("BookingHotelDbConnectionString");
+builder.Services.AddDbContext<BookingHotelDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers();  
+// Learn more about conf iguring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
