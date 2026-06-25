@@ -20,7 +20,10 @@ public class HotelsController(BookingHotelDbContext context) : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult<Hotel>> GetHotel(int id)
     {
-        var hotel = await context.Hotels.FindAsync(id);
+        var hotel = await context
+            .Hotels 
+            .Include(h => h.Country)
+            .FirstOrDefaultAsync(h=> h.CountryId == id);
         if (hotel == null)
         {
             return NotFound();

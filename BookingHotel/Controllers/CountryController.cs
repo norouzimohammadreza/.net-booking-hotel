@@ -21,18 +21,21 @@ public class CountryController(BookingHotelDbContext context) : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult<Country>> GetCountry(int id)
     {
-        var country = await context.Countries.FindAsync(id);
+        var country = await context
+            .Countries
+            .Include(c => c.Hotels)
+            .FirstOrDefaultAsync(c=> c.CountryId == id);
         if (country == null)
         {
             return NotFound();
-        }
+        } 
 
         return country;
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutCountry(int id, Country country)
-    {
+    { 
         if (id != country.CountryId)
         {
             return BadRequest();
