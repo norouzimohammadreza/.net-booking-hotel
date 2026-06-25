@@ -10,7 +10,10 @@ public class HotelsController(BookingHotelDbContext context) : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Hotel>>> Index()
     {
-        var hotels = await context.Hotels.ToListAsync();
+        var hotels = await context
+            .Hotels
+           // .Include(h=> h.Country)
+            .ToListAsync();
         return hotels;
     }
 
@@ -55,6 +58,7 @@ public class HotelsController(BookingHotelDbContext context) : Controller
     [HttpPost]
     public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
     {
+        Console.WriteLine(hotel);
          context.Hotels.Add(hotel);
          await context.SaveChangesAsync();
          return CreatedAtAction("GetHotel",new { id = hotel.Id }, hotel);

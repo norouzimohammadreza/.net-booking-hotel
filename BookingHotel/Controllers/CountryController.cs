@@ -11,7 +11,10 @@ public class CountryController(BookingHotelDbContext context) : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
     {
-        var countries = await context.Countries.ToListAsync();
+        var countries = await context
+            .Countries
+             //.Include(c => c.Hotels)
+            .ToListAsync();
         return countries;
     }
 
