@@ -22,7 +22,7 @@ namespace BookingHotel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Countries",  x => x.CountryId);
+                    table.PrimaryKey("PK_Countries", x => x.CountryId);
                 });
 
             migrationBuilder.CreateTable(

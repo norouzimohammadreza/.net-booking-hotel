@@ -66,7 +66,7 @@ namespace BookingHotel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex(new[] { "CountryId" }, "IX_Hotels_CountryId");
 
                     b.ToTable("Hotels");
                 });

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingHotel.Migrations
 {
     [DbContext(typeof(BookingHotelDbContext))]
-    [Migration("20260620194634_Initial")]
+    [Migration("20260625155655_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -69,7 +69,7 @@ namespace BookingHotel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex(new[] { "CountryId" }, "IX_Hotels_CountryId");
 
                     b.ToTable("Hotels");
                 });
