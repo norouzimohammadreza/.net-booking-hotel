@@ -33,3 +33,12 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5063/api/Hotels/2
+
+###
+POST {{BookingHotel_HostAddress}}/api/Country
+Content-Type: application/json
+ 
+{
+  "Name" : "Iran",
+  "ShortName" : "IR"
+}
