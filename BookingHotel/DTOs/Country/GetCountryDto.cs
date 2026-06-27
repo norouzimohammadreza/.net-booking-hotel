@@ -1,7 +1,9 @@
-﻿namespace BookingHotel.DTOs.Country;
+﻿using BookingHotel.DTOs.Hotel;
+
+namespace BookingHotel.DTOs.Country;
 
 public record GetCountryDto(
     int CountryId,
     string Name,
-    string ShortName
-);
+    string ShortName,
+    List<GetHotelsDto>? Hotels);

@@ -1,6 +1,6 @@
 ﻿namespace BookingHotel.DTOs.Hotel;
 
-public record GetHotelsDto(
+public record  GetHotelsDto(
     int Id,
     string Name,
     string Address,
