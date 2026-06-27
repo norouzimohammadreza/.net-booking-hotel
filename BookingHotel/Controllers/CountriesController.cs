@@ -8,7 +8,7 @@ namespace BookingHotel.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CountryController(BookingHotelDbContext context) : Controller
+public class CountriesController(BookingHotelDbContext context) : Controller
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetCountriesDto>>> GetCountries()
