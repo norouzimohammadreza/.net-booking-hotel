@@ -1,4 +1,6 @@
 ﻿using BookingHotel.Data;
+using BookingHotel.DTOs.Country;
+using BookingHotel.DTOs.Hotel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,22 +11,36 @@ namespace BookingHotel.Controllers;
 public class CountryController(BookingHotelDbContext context) : Controller
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+    public async Task<ActionResult<IEnumerable<GetCountriesDto>>> GetCountries()
     {
         var countries = await context
             .Countries
-             //.Include(c => c.Hotels)
+            .Select(c=> new GetCountriesDto(c.CountryId, c.Name,c.ShortName))
             .ToListAsync();
         return countries;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Country>> GetCountry(int id)
+    public async Task<ActionResult<GetCountryDto>> GetCountry(int id)
     {
         var country = await context
             .Countries
-            .Include(c => c.Hotels)
-            .FirstOrDefaultAsync(c=> c.CountryId == id);
+            .Where(c=> c.CountryId == id)
+            //.Include(c => c.Hotels)
+            .Select(c=> new GetCountryDto(
+                c.CountryId,
+                c.Name,
+                c.ShortName,
+                c.Hotels.Select(h=> new GetHotelsDto(
+                    h.Id,
+                    h.Name,
+                    h.Address,
+                    h.Rating,
+                    h.CountryId
+                    )
+                ).ToList()
+                ))
+            .FirstOrDefaultAsync();
         if (country == null)
         {
             return NotFound();
@@ -34,12 +50,20 @@ public class CountryController(BookingHotelDbContext context) : Controller
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCountry(int id, Country country)
+    public async Task<IActionResult> PutCountry(int id, UpdateCountryDto countryDto)
     { 
-        if (id != country.CountryId)
+        if (id != countryDto.CountryId)
         {
             return BadRequest();
         }
+        
+        var country = await context.Countries.FindAsync(countryDto.CountryId);
+        if (country == null)
+        {
+            return NotFound();
+        }
+
+        country.Name = countryDto.Name;
 
         context.Entry(country).State = EntityState.Modified;
 
@@ -61,8 +85,13 @@ public class CountryController(BookingHotelDbContext context) : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<Country>> PostCountry(Country country)
+    public async Task<ActionResult<Country>> PostCountry(CreateCountryDto countryDto)
     {
+        var country = new Country
+        {
+            Name = countryDto.Name,
+            ShortName = countryDto.ShortName
+        };
         context.Countries.Add(country);
         await context.SaveChangesAsync();
         return CreatedAtAction("GetCountry", new { id = country.CountryId }, country);
