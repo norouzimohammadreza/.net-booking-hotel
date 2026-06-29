@@ -17,6 +17,7 @@ builder.Services.AddControllers()
     });  
 
 builder.Services.AddScoped<ICountriesService, CountriesService>();
+builder.Services.AddScoped<IHotelsService, HotelsService>();
 // Learn more about conf iguring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
