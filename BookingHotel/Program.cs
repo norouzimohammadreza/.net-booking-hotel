@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using BookingHotel.Contracts;
 using BookingHotel.Data;
+using BookingHotel.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddControllers()
     {
         opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });  
+
+builder.Services.AddScoped<ICountriesService, CountriesService>();
 // Learn more about conf iguring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

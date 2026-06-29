@@ -39,7 +39,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
         return country ?? null;
     }
 
-    public async Task<GetCountryDto> UpdateCountryDto(int id, UpdateCountryDto countryDto)
+    public async Task UpdateCountry(int id, UpdateCountryDto countryDto)
     {
          
         var country = await context.Countries.FindAsync(countryDto.CountryId);
@@ -54,16 +54,10 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
         context.Entry(country).State = EntityState.Modified;
         
         await context.SaveChangesAsync();
-
-        return new GetCountryDto(
-            country.CountryId,
-            country.Name,
-            country.ShortName,
-            []
-            );
+        
     }
 
-    public async Task<GetCountryDto> CreateCountryDto(CreateCountryDto countryDto)
+    public async Task<GetCountryDto> CreateCountry(CreateCountryDto countryDto)
     {
         var country = new Country
         {
