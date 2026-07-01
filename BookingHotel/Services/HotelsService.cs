@@ -2,14 +2,15 @@
 using BookingHotel.Data;
 using BookingHotel.DTOs.Hotel;
 using Microsoft.EntityFrameworkCore;
+using BookingHotel.Results;
 
 namespace BookingHotel.Services;
 
 public class HotelsService(BookingHotelDbContext context) : IHotelsService
 {
-    public async Task<IEnumerable<GetHotelsDto>> GetHotels()
+    public async Task<Result<IEnumerable<GetHotelsDto>>> GetHotels()
     {
-        return await context
+        var hotels = await context
             .Hotels
             .Select(h=> new GetHotelsDto(
                 h.Id,
@@ -18,11 +19,13 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
                 h.Rating,
                 h.CountryId))
             .ToListAsync();
+        
+        return Result<IEnumerable<GetHotelsDto>>.Success(hotels);
     }
 
-    public async Task<GetHotelDto?> GetHotel(int id)
+    public async Task<Result<GetHotelDto>> GetHotel(int id)
     {
-      var country = await context
+      var hotel = await context
             .Hotels
             .Where(h => h.Id == id)
             .Select(h => new GetHotelDto(
@@ -33,55 +36,86 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
                 h.Country!.Name))
             .FirstOrDefaultAsync();
       
-      return country ?? null;
+      return hotel == null ? Result<GetHotelDto>.NotFound() : Result<GetHotelDto>.Success(hotel);
       
     }
 
-    public async Task<GetHotelDto> CreateHotel(CreateHotelDto hotelDto)
+    public async Task<Result<GetHotelDto>> CreateHotel(CreateHotelDto hotelDto)
     {
-        var hotel = new Hotel
+        try
         {
-            Name = hotelDto.Name,
-            Address = hotelDto.Address,
-            Rating = hotelDto.Rating,
-            CountryId = hotelDto.CountryId
-        };
-        context.Hotels.Add(hotel);
-        await context.SaveChangesAsync();
+            var hotel = new Hotel
+            {
+                Name = hotelDto.Name,
+                Address = hotelDto.Address,
+                Rating = hotelDto.Rating,
+                CountryId = hotelDto.CountryId
+            };
+            context.Hotels.Add(hotel);
+            await context.SaveChangesAsync();
 
-        return new GetHotelDto(
-            hotel.Id,
-            hotel.Name,
-            hotel.Address,
-            hotel.Rating,
-            hotel.Country!.Name
+            var dto = new GetHotelDto(
+                hotel.Id,
+                hotel.Name,
+                hotel.Address,
+                hotel.Rating,
+                hotel.Country!.Name
             );
+            return Result<GetHotelDto>.Success(dto);
+        }
+        catch (Exception)
+        {
+            return Result<GetHotelDto>.Failure();
+        }
+
     }
 
-    public async Task UpdateHotel(int id, UpdateHotelDto hotelDto)
+    public async Task<Result> UpdateHotel(int id, UpdateHotelDto hotelDto)
     {
-        var hotel = await context.Hotels.FindAsync(id);
-        if (hotel == null)
+        try
         {
-            throw new KeyNotFoundException();
-        }
-        hotel.Name = hotelDto.Name;
-        hotel.Address = hotelDto.Address;
-        hotel.Rating = hotelDto.Rating;
-        hotel.CountryId = hotelDto.CountryId;
+            if (id != hotelDto.Id)
+            {
+                return Result.Failure(new Error("Validation Error","Validation Error"));
+            }
+            var hotel = await context.Hotels.FindAsync(id);
+            if (hotel == null)
+            {
+                return Result.Failure(new Error("NotFound", "NotFound"));
+            }
+            hotel.Name = hotelDto.Name;
+            hotel.Address = hotelDto.Address;
+            hotel.Rating = hotelDto.Rating;
+            hotel.CountryId = hotelDto.CountryId;
 
-        context.Entry(hotel).State = EntityState.Modified;
-       await context.SaveChangesAsync();
+            context.Entry(hotel).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return Result.Success();
+        }
+        catch (Exception)
+        {
+            return Result.Failure();
+        }
+
     }
 
-    public async Task DeleteHotel(int id)
+    public async Task<Result> DeleteHotel(int id)
     {
-        var hotel = await context.Hotels.FindAsync(id);
-        if (hotel == null)
+        try
         {
-            throw new KeyNotFoundException();
+            var hotel = await context.Hotels.FindAsync(id);
+            if (hotel == null)
+            {
+                return Result.Failure(new Error("NotFound", "NotFound"));
+            }
+            context.Hotels.Remove(hotel);
+            await context.SaveChangesAsync();
+            return Result.Success();
         }
-        context.Hotels.Remove(hotel);
-        await context.SaveChangesAsync();
+        catch (Exception e)
+        {
+            return Result.Failure();
+        }
+
     }
 }

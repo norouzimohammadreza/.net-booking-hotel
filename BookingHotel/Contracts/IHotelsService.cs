@@ -1,12 +1,13 @@
 ﻿using BookingHotel.DTOs.Hotel;
+using BookingHotel.Results;
 
 namespace BookingHotel.Contracts;
 
 public interface IHotelsService
 {
-    Task<IEnumerable<GetHotelsDto>> GetHotels();
-    Task<GetHotelDto?> GetHotel(int id);
-    Task<GetHotelDto> CreateHotel(CreateHotelDto hotelDto);
-    Task UpdateHotel(int id, UpdateHotelDto hotelDto);
-    Task DeleteHotel(int id);
+    Task<Result<IEnumerable<GetHotelsDto>>>  GetHotels();
+    Task<Result<GetHotelDto>> GetHotel(int id);
+    Task<Result<GetHotelDto>> CreateHotel(CreateHotelDto hotelDto);
+    Task<Result> UpdateHotel(int id, UpdateHotelDto hotelDto);
+    Task<Result> DeleteHotel(int id);
 }
