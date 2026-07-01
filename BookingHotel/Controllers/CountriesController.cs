@@ -1,7 +1,6 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.DTOs.Country;
-using BookingHotel.Results;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -9,7 +8,7 @@ namespace BookingHotel.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CountriesController(ICountriesService countriesService) : Controller
+public class CountriesController(ICountriesService countriesService) : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetCountriesDto>>> GetCountries()
@@ -49,27 +48,4 @@ public class CountriesController(ICountriesService countriesService) : Controlle
        var result = await countriesService.DeleteCountryDto(id); 
       return ToActionResult(result);
     } 
-    
-    private ActionResult<T> ToActionResult<T>(Result<T> result) =>
-        result.IsSuccess ? Ok(result.Value) : MapErrorsToResponse(result.Errors);
-    
-    private ActionResult ToActionResult(Result result) =>
-        result.IsSuccess ? NoContent() : MapErrorsToResponse(result.Errors);
-
-    private ActionResult MapErrorsToResponse(Error[] errors)
-    {
-        if (errors == null || errors.Length == 0)
-        {
-            return Problem();
-        }
-            var e = errors[0];
-            return e.Code switch
-            {
-                "NotFound" => NotFound(e.Description),
-                "BadRequest" => BadRequest(e.Description),
-                "Validation" => BadRequest(e.Description),
-                _ => Conflict(e.Description)
-            };
-    }
-
 }
