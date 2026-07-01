@@ -1,9 +1,9 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.DTOs.Country;
-using BookingHotel.DTOs.Hotel;
+using BookingHotel.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace BookingHotel.Controllers; 
 
@@ -15,45 +15,61 @@ public class CountriesController(ICountriesService countriesService) : Controlle
     public async Task<ActionResult<IEnumerable<GetCountriesDto>>> GetCountries()
     {
         var countries = await countriesService.GetCountries();
-        return Ok(countries);
+        return ToActionResult(countries);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GetCountryDto>> GetCountry(int id)
     {
         var country = await countriesService.GetCountry(id);
-        if (country == null)
-        {
-            return NotFound();
-        } 
-
-        return Ok(country);
+       return ToActionResult(country);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutCountry(int id, UpdateCountryDto countryDto)
     { 
-        if (id != countryDto.CountryId)
-        {
-            return BadRequest();
-        } 
-        await countriesService.UpdateCountry(id, countryDto);
-        
-        return NoContent();
+       var result = await countriesService.UpdateCountry(id, countryDto);
+           return ToActionResult(result);
     }
 
     [HttpPost]
     public async Task<ActionResult<Country>> PostCountry(CreateCountryDto countryDto)
     {
-        var country = await countriesService.CreateCountry(countryDto);
-        return CreatedAtAction("GetCountry", new { id = country.CountryId }, country);
+        var result = await countriesService.CreateCountry(countryDto);
+        if (!result.IsSuccess)
+        {
+           return MapErrorsToResponse(result.Errors);
+        }
+        return CreatedAtAction("GetCountry", new { id = result.Value!.CountryId }, result.Value);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCountry(int id)
     {
-        await countriesService.DeleteCountryDto(id); 
-        return NoContent();
+       var result = await countriesService.DeleteCountryDto(id); 
+      return ToActionResult(result);
     } 
+    
+    private ActionResult<T> ToActionResult<T>(Result<T> result) =>
+        result.IsSuccess ? Ok(result.Value) : MapErrorsToResponse(result.Errors);
+    
+    private ActionResult ToActionResult(Result result) =>
+        result.IsSuccess ? NoContent() : MapErrorsToResponse(result.Errors);
+
+    private ActionResult MapErrorsToResponse(Error[] errors)
+    {
+        if (errors == null || errors.Length == 0)
+        {
+            return Problem();
+        }
+            var e = errors[0];
+            return e.Code switch
+            {
+                "NotFound" => NotFound(e.Description),
+                "BadRequest" => BadRequest(e.Description),
+                "Validation" => BadRequest(e.Description),
+                _ => Conflict(e.Description)
+            };
+    }
 
 }

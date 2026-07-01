@@ -76,7 +76,7 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
         {
             if (id != hotelDto.Id)
             {
-                return Result.Failure(new Error("Validation Error","Validation Error"));
+                return Result.Failure(new Error("Validation","Validation Error"));
             }
             var hotel = await context.Hotels.FindAsync(id);
             if (hotel == null)

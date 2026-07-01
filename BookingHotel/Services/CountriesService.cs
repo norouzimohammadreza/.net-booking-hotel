@@ -53,7 +53,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
             var country = await context.Countries.FindAsync(countryDto.CountryId);
             if (country == null)
             {
-                return Result.Failure(new Error("Not Found","Country is not find"));
+                return Result.Failure(new Error("NotFound","Country is not find"));
             }
             
             var duplicateName = await context.Countries.AnyAsync(c=> c.CountryId != id && c.Name == countryDto.Name);
@@ -118,7 +118,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
             var country = await context.Countries.FindAsync(countryId);
             if (country == null)
             {
-                return Result.Failure(new Error("Not Found","Country is not find"));
+                return Result.Failure(new Error("NotFound","Country is not find"));
             }
             context.Countries.Remove(country);
             await context.SaveChangesAsync();
