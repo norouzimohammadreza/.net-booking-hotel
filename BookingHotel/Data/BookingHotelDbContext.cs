@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using BookingHotel.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingHotel.Data;
 
-public partial class BookingHotelDbContext : DbContext
+public partial class BookingHotelDbContext : IdentityDbContext<IdentityUser>
 {
     public BookingHotelDbContext()
     {
@@ -26,6 +25,7 @@ public partial class BookingHotelDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Hotel>(entity =>
         {
             entity.HasIndex(e => e.CountryId, "IX_Hotels_CountryId");

@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
  var connectionString = builder.Configuration.GetConnectionString("BookingHotelDbConnectionString");
 builder.Services.AddDbContext<BookingHotelDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddIdentityCore<IdentityUser>(options =>
+    { })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<BookingHotelDbContext>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt =>
