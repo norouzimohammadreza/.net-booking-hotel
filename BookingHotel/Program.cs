@@ -10,10 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
  var connectionString = builder.Configuration.GetConnectionString("BookingHotelDbConnectionString");
 builder.Services.AddDbContext<BookingHotelDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddIdentityCore<IdentityUser>(options =>
-    { })
-    .AddRoles<IdentityRole>()
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<BookingHotelDbContext>();
+builder.Services.AddAuthorization(); 
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt =>
@@ -28,6 +27,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.MapGroup("auth").MapIdentityApi<IdentityUser>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
