@@ -49,3 +49,13 @@ GET {{BookingHotel_HostAddress}}/api/Country
 
 ###
 GET {{BookingHotel_HostAddress}}/api/Country/1
+
+
+### 1. Register a new user
+POST {{BookingHotel_HostAddress}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password@123!"
+}
