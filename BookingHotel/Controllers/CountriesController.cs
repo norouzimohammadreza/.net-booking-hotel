@@ -1,6 +1,7 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.DTOs.Country;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -8,6 +9,7 @@ namespace BookingHotel.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CountriesController(ICountriesService countriesService) : BaseApiController
 {
     [HttpGet]

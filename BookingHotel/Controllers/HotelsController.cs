@@ -2,12 +2,14 @@
 using BookingHotel.Data;
 using BookingHotel.DTOs.Hotel;
 using BookingHotel.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingHotel.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class HotelsController(IHotelsService hotelsService) : BaseApiController
 {
     [HttpGet]
