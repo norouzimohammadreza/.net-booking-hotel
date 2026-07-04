@@ -56,6 +56,15 @@ POST {{BookingHotel_HostAddress}}/auth/register
 Content-Type: application/json
 
 {
-  "email": "testuser@example.com",
+  "email": "abcdesfaaw2w2s@example.com",
+  "password": "Password@123!"
+}
+
+### login
+POST {{BookingHotel_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "abcdesfaaw2w2s@example.com",
   "password": "Password@123!"
 }

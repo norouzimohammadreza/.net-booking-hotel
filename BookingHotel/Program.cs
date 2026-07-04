@@ -32,6 +32,7 @@ builder.Services.AddAuthentication(options =>
     }; 
 });
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingHotelDbContext>();
 builder.Services.AddAuthorization(); 
 
@@ -49,11 +50,12 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.MapGroup("auth").MapIdentityApi<IdentityUser>();
+app.MapGroup("identity-auth").MapIdentityApi<IdentityUser>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
