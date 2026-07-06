@@ -25,11 +25,13 @@ public class UsersService(UserManager<IdentityUser> userManager, IConfiguration 
             var errors = result.Errors.Select(error => new Error("BadRequest", error.Description)).ToArray();
             return Result<GetUserDto>.Failure(errors);
         }
-
+        
+        await userManager.AddToRoleAsync(userModel,createUserDto.Role);
         var registeredUserDto = new GetUserDto
         {
             Id = userModel.Id,
-            Email = userModel.Email
+            Email = userModel.Email,
+            Role = createUserDto.Role
         };
         return Result<GetUserDto>.Success(registeredUserDto);
     }
