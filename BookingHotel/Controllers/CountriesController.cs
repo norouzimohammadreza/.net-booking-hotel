@@ -27,6 +27,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> PutCountry(int id, UpdateCountryDto countryDto)
     { 
        var result = await countriesService.UpdateCountry(id, countryDto);
@@ -34,6 +35,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<Country>> PostCountry(CreateCountryDto countryDto)
     {
         var result = await countriesService.CreateCountry(countryDto);
@@ -45,6 +47,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteCountry(int id)
     {
        var result = await countriesService.DeleteCountryDto(id); 
