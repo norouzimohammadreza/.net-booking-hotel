@@ -1,20 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingHotel.Data;
 
-public partial class BookingHotelDbContext : IdentityDbContext<IdentityUser>
+public partial class BookingHotelDbContext(DbContextOptions<BookingHotelDbContext> options) : IdentityDbContext<IdentityUser>(options)
 {
-    public BookingHotelDbContext()
-    {
-    }
-
-    public BookingHotelDbContext(DbContextOptions<BookingHotelDbContext> options)
-        : base(options)
-    {
-    }
-
+    
     public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<Hotel> Hotels { get; set; }
@@ -32,7 +25,7 @@ public partial class BookingHotelDbContext : IdentityDbContext<IdentityUser>
 
             entity.HasOne(d => d.Country).WithMany(p => p.Hotels).HasForeignKey(d => d.CountryId);
         });
-
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         OnModelCreatingPartial(modelBuilder);
     }
 
