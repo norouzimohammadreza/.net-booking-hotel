@@ -17,7 +17,11 @@ public class Hotel
     [Range(0,5)]
     public double Rating { get; set; }
     
+    public decimal PerNightRating { get; set; }
+    
     public int CountryId { get; set; }
     
     public Country? Country { get; set; }
+    
+    public ICollection<HotelAdmin> Admins { get; set; } = [];
 }
