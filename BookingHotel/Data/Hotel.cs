@@ -24,4 +24,5 @@ public class Hotel
     public Country? Country { get; set; }
     
     public ICollection<HotelAdmin> Admins { get; set; } = [];
+    public ICollection<Booking> Bookings { get; set; } = [];
 }
