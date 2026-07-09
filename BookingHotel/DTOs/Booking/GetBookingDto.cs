@@ -7,7 +7,7 @@ public record GetBookingDto
     string HotelName,
     DateOnly CheckIn,
     DateOnly CheckOut,
-    int Guest,
+    int Guests,
     decimal TotalPrice,
     string Status,
     DateTime CreatedAt,
