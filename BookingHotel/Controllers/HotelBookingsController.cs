@@ -17,6 +17,7 @@ public class HotelBookingsController(IBookingService bookingService) : BaseApiCo
     
     [HttpPost]
     public async Task<ActionResult<GetBookingDto>> Create([FromRoute] int hotelId,[FromBody] CreateBookingDto createBookingDto){
-        return Ok();
+        var result = await bookingService.CreateBooking(createBookingDto);
+        return ToActionResult(result);
     }
 } 
