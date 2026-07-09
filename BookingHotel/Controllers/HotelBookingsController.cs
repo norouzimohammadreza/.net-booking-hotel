@@ -1,16 +1,18 @@
-﻿using BookingHotel.DTOs.Booking;
+﻿using BookingHotel.Contracts;
+using BookingHotel.DTOs.Booking;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingHotel.Controllers;
 
 [ApiController]
 [Route("api/hotels/{hotelId}/bookings")]
-public class HotelBookingsController : Controller
+public class HotelBookingsController(IBookingService bookingService) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<GetBookingDto>> GetBookings([FromRoute] int hotelId)
+    public async Task<ActionResult<IEnumerable<GetBookingDto>>> GetBookings([FromRoute] int hotelId)
     {
-        return Ok();
+        var result = await bookingService.GetBookingsForHotel(hotelId);
+        return ToActionResult(result);
     }
     
     [HttpPost]

@@ -34,7 +34,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingHotelDbContext>();
-builder.Services.AddAuthorization(); 
+builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt =>
@@ -45,6 +46,7 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<ICountriesService, CountriesService>();
 builder.Services.AddScoped<IHotelsService, HotelsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 // Learn more about conf iguring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
