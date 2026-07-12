@@ -30,4 +30,13 @@ public class HotelBookingsController(IBookingService bookingService) : BaseApiCo
         var result = await bookingService.UpdateBooking(hotelId, bookingId, updateBookingDto);
         return ToActionResult(result);
     }
+    
+    [HttpPut("{bookingId:int}/cancel")]
+    public async Task<ActionResult > Cancel(
+        [FromRoute] int hotelId,
+        [FromRoute] int bookingId)
+    {
+        var result = await bookingService.CancelBooking(hotelId, bookingId);
+        return ToActionResult(result);
+    }
 } 
