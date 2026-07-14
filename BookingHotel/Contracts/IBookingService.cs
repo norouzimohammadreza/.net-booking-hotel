@@ -15,4 +15,6 @@ public interface IBookingService
          );
      
          Task<Result> CancelBooking([FromRoute] int hotelId, [FromRoute] int bookingId);
+         Task<Result> AdminCancelBooking([FromRoute] int hotelId, [FromRoute] int bookingId);
+         Task<Result> AdminConfirmBooking([FromRoute] int hotelId, [FromRoute] int bookingId);
 }

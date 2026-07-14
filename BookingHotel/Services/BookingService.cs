@@ -216,4 +216,80 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
         await context.SaveChangesAsync();
         return Result.Success(); 
     }
+
+    public async Task<Result> AdminCancelBooking(int hotelId, int bookingId)
+    {
+        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        
+        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        {
+            return Result.Failure(new Error("Validation","User is required."));
+        }
+        
+        var isHotelAdmin = await context.HotelAdmins.AnyAsync(q=> q.HotelId == hotelId && q.UserId == userId);
+
+        if (!isHotelAdmin)
+        {
+            return Result.Failure(new Error("Forbidden","User is not hotel admin."));
+        }
+        
+        var booking = await context.Bookings
+            .Include(booking => booking.Hotel!)
+            .FirstOrDefaultAsync(b =>
+                b.Id == bookingId
+                && b.HotelId == hotelId);
+
+        if (booking == null)
+        {
+            return Result.Failure(new Error("NotFound","Booking not found"));
+        }
+
+        if (booking.Status == BookingStatus.Cancelled)
+        {
+            return Result.Failure(new Error("Conflict","Cancelled booking"));
+        }
+        
+        booking.Status = BookingStatus.Cancelled;
+        booking.UpdatedAt = DateTime.UtcNow;
+        await context.SaveChangesAsync();
+        return Result.Success(); 
+    }
+
+    public async Task<Result> AdminConfirmBooking(int hotelId, int bookingId)
+    {
+        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        
+        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        {
+            return Result.Failure(new Error("Validation","User is required."));
+        }
+        
+        var isHotelAdmin = await context.HotelAdmins.AnyAsync(q=> q.HotelId == hotelId && q.UserId == userId);
+
+        if (!isHotelAdmin)
+        {
+            return Result.Failure(new Error("Forbidden","User is not hotel admin."));
+        }
+        
+        var booking = await context.Bookings
+            .Include(booking => booking.Hotel!)
+            .FirstOrDefaultAsync(b =>
+                b.Id == bookingId
+                && b.HotelId == hotelId);
+
+        if (booking == null)
+        {
+            return Result.Failure(new Error("NotFound","Booking not found"));
+        }
+
+        if (booking.Status == BookingStatus.Cancelled)
+        {
+            return Result.Failure(new Error("Conflict","Cancelled booking"));
+        }
+        
+        booking.Status = BookingStatus.Confirmed;
+        booking.UpdatedAt = DateTime.UtcNow;
+        await context.SaveChangesAsync();
+        return Result.Success(); 
+    }
 }
