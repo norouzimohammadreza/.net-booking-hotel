@@ -9,4 +9,5 @@ public interface IUsersService
      Task<Result<GetUserDto>> Register(CreateUserDto createUserDto);
      Task<Result<string>> Login(LoginUserDto loginUserDto);
      Task<string> GenerateToken(IdentityUser user);
+     string GetUserId();
 }

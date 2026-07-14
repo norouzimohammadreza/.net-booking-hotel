@@ -10,7 +10,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace BookingHotel.Services;
 
-public class UsersService(UserManager<IdentityUser> userManager, IConfiguration configuration) : IUsersService
+public class UsersService(UserManager<IdentityUser> userManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IUsersService
 {
     public async Task<Result<GetUserDto>> Register(CreateUserDto createUserDto)
     {
@@ -80,5 +80,10 @@ public class UsersService(UserManager<IdentityUser> userManager, IConfiguration 
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string GetUserId()
+    {
+        return httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty ;
     }
 }

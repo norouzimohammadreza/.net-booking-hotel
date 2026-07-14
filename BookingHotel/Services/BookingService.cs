@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingHotel.Services;
 
-public class BookingService(BookingHotelDbContext context, IHttpContextAccessor httpContextAccessor) : IBookingService
+public class BookingService(BookingHotelDbContext context, IUsersService usersService) : IBookingService
 {
     public async Task<Result<IEnumerable<GetBookingDto>>> GetBookingsForHotel(int hotelId)
     {
@@ -42,9 +42,9 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
 
     public async Task<Result<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto)
     {
-        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = usersService.GetUserId();
 
-        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
         }
@@ -113,9 +113,9 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
 
     public async Task<Result<GetBookingDto>> UpdateBooking(int hotelId, int bookingId, UpdateBookingDto updateBookingDto)
     {
-        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = usersService.GetUserId();
 
-        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
         }
@@ -187,9 +187,9 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
 
     public async Task<Result> CancelBooking(int hotelId, int bookingId)
     {
-        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = usersService.GetUserId();
 
-        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result.Failure(new Error("Validation","User is required."));
         }
@@ -219,9 +219,9 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
 
     public async Task<Result> AdminCancelBooking(int hotelId, int bookingId)
     {
-        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        
-        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        var userId = usersService.GetUserId();
+
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result.Failure(new Error("Validation","User is required."));
         }
@@ -257,9 +257,9 @@ public class BookingService(BookingHotelDbContext context, IHttpContextAccessor 
 
     public async Task<Result> AdminConfirmBooking(int hotelId, int bookingId)
     {
-        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        
-        if (userId == null || string.IsNullOrWhiteSpace(userId))
+        var userId = usersService.GetUserId();
+
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result.Failure(new Error("Validation","User is required."));
         }
