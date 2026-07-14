@@ -23,7 +23,9 @@ public abstract class BaseApiController : ControllerBase
             "NotFound" => NotFound(e.Description),
             "BadRequest" => BadRequest(e.Description),
             "Validation" => BadRequest(e.Description),
-            _ => Conflict(e.Description)
+            "Forbidden" => Forbid(e.Description),
+            "Conflict" => Conflict(e.Description),
+            _ => Problem(detail:string.Join("; ",errors.Select(x=> x.Description)),title:e.Code)
         };
     }
 }
