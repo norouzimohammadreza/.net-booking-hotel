@@ -40,6 +40,36 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
          return Result<IEnumerable<GetBookingDto>>.Success(bookings);
     }
 
+    public async Task<Result<IEnumerable<GetBookingDto>>> GetUserBookings(int hotelId)
+    {
+        var userId = usersService.GetUserId();
+        var hotelExists = await context.Bookings.AnyAsync(b => b.HotelId == hotelId);
+
+        if (!hotelExists)
+        {
+            return Result<IEnumerable<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
+        }
+
+        var bookings = await context.Bookings
+            .Where(b => b.HotelId == hotelId && b.UserId == userId)
+            .OrderBy(b => b.CheckIn)
+            .Select(b=> new GetBookingDto(
+                b.Id,
+                b.HotelId,
+                b.Hotel!.Name,
+                b.CheckIn,
+                b.CheckOut,
+                b.Guests,
+                b.TotalPrice,
+                b.Status!.ToString(),
+                b.CreatedAt,
+                b.UpdatedAt
+            ))
+            .ToListAsync();
+        
+        return Result<IEnumerable<GetBookingDto>>.Success(bookings);
+    }
+
     public async Task<Result<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto)
     {
         var userId = usersService.GetUserId();
