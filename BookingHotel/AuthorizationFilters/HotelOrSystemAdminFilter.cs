@@ -1,4 +1,5 @@
-﻿using BookingHotel.Data;
+﻿using System.Security.Claims;
+using BookingHotel.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ public class HotelOrSystemAdminFilter(BookingHotelDbContext dbContext):IAsyncAut
             return;
         }
 
-        var userId = httpUser.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = httpUser.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? httpUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrWhiteSpace(userId))
         {
             context.Result = new ForbidResult();

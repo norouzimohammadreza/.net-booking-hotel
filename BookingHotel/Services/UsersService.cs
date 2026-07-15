@@ -79,11 +79,13 @@ public class UsersService(UserManager<IdentityUser> userManager, IConfiguration 
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token); 
     }
 
     public string GetUserId()
     {
-        return httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty ;
+        return httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+               ?? httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+               ?? string.Empty ;
     }
 }
