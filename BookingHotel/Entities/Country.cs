@@ -4,7 +4,7 @@ namespace BookingHotel.Entities;
 
 public class Country
 {
-    public int CountryId { get; set; }
+    public int Id { get; set; }
     [Required]
     [MaxLength(50)]
     [MinLength(5)]

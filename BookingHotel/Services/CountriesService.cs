@@ -14,7 +14,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
     {
         var countries = await context
             .Countries
-            .Select(c=> new GetCountriesDto(c.CountryId, c.Name,c.ShortName))
+            .Select(c=> new GetCountriesDto(c.Id, c.Name,c.ShortName))
             .ToListAsync(); 
         
         return Result<IEnumerable<GetCountriesDto>>.Success(countries);
@@ -24,9 +24,9 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
     {
         var country = await context
             .Countries
-            .Where(c=> c.CountryId == id)
+            .Where(c=> c.Id == id)
             .Select(c=> new GetCountryDto(
-                c.CountryId,
+                c.Id,
                 c.Name,
                 c.ShortName,
                 c.Hotels.Select(h=> new GetHotelsDto(
@@ -57,7 +57,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
                 return Result.Failure(new Error("NotFound","Country is not find"));
             }
             
-            var duplicateName = await context.Countries.AnyAsync(c=> c.CountryId != id && c.Name == countryDto.Name);
+            var duplicateName = await context.Countries.AnyAsync(c=> c.Id != id && c.Name == countryDto.Name);
 
             if (duplicateName)
             {
@@ -98,7 +98,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
             context.Countries.Add(country);
             await context.SaveChangesAsync();
             var dto = new GetCountryDto(
-                country.CountryId,
+                country.Id,
                 country.Name,
                 country.ShortName,
                 []
