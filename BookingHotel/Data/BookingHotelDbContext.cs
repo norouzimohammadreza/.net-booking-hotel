@@ -24,9 +24,9 @@ public partial class BookingHotelDbContext(DbContextOptions<BookingHotelDbContex
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Hotel>(entity =>
         {
-            entity.HasIndex(e => e.CountryId, "IX_Hotels_CountryId");
+            entity.HasIndex(e => e.Id, "IX_Hotels_CountryId");
 
-            entity.HasOne(d => d.Country).WithMany(p => p.Hotels).HasForeignKey(d => d.CountryId);
+            entity.HasOne(d => d.Country).WithMany(p => p.Hotels).HasForeignKey(d => d.Id);
         });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         OnModelCreatingPartial(modelBuilder);
