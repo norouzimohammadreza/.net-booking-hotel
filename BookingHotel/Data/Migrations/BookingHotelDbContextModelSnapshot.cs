@@ -3,20 +3,17 @@ using System;
 using BookingHotel.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BookingHotel.Migrations
+namespace BookingHotel.Data.Migrations
 {
     [DbContext(typeof(BookingHotelDbContext))]
-    [Migration("20260707182955_AddedBookingsTable")]
-    partial class AddedBookingsTable
+    partial class BookingHotelDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
