@@ -1,9 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using BookingHotel.Contracts;
+﻿using BookingHotel.Contracts;
 using BookingHotel.Data;
+using BookingHotel.Entities;
 using BookingHotel.Data.Enums;
 using BookingHotel.DTOs.Booking;
-using BookingHotel.DTOs.User;
 using BookingHotel.Results;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,4 @@
 ﻿using BookingHotel.Contracts;
-using BookingHotel.Data;
 using BookingHotel.DTOs.Country;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +35,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<Country>> PostCountry(CreateCountryDto countryDto)
+    public async Task<ActionResult<GetCountryDto>> PostCountry(CreateCountryDto countryDto)
     {
         var result = await countriesService.CreateCountry(countryDto);
         if (!result.IsSuccess)

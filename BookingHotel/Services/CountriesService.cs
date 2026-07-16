@@ -4,6 +4,7 @@ using BookingHotel.Contracts;
 using BookingHotel.DTOs.Hotel;
 using Microsoft.EntityFrameworkCore;
 using BookingHotel.Results;
+using BookingHotel.Entities;
 
 namespace BookingHotel.Services;
 

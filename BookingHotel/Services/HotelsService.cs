@@ -3,6 +3,7 @@ using BookingHotel.Data;
 using BookingHotel.DTOs.Hotel;
 using Microsoft.EntityFrameworkCore;
 using BookingHotel.Results;
+using BookingHotel.Entities;
 
 namespace BookingHotel.Services;
 

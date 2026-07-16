@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using BookingHotel.Entities;
 
 namespace BookingHotel.Data.Configurations;
 
