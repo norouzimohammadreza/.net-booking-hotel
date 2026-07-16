@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace BookingHotel.Data;
+namespace BookingHotel.Entities;
+
 
 public class HotelAdmin
 {

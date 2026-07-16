@@ -1,7 +1,8 @@
 ﻿using BookingHotel.Data.Enums;
 using Microsoft.AspNetCore.Identity;
 
-namespace BookingHotel.Data;
+namespace BookingHotel.Entities;
+
 
 public class Booking
 {
