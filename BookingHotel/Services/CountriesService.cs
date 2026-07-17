@@ -47,11 +47,11 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
     {
         try
         {
-            if (id != countryDto.CountryId)
+            if (id != countryDto.Id)
             {
                 return Result.Failure(new Error("Validation","Country id does not match"));
             }
-            var country = await context.Countries.FindAsync(countryDto.CountryId);
+            var country = await context.Countries.FindAsync(countryDto.Id);
             if (country == null)
             {
                 return Result.Failure(new Error("NotFound","Country is not find"));
