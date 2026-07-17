@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.Services;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -41,13 +40,13 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers()
-    .AddFluentValidation(fv =>
-    {
-        fv.RegisterValidatorsFromAssemblyContaining<Program>();
-    })
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    })
+    .AddFluentValidation(fv =>
+    {
+        fv.RegisterValidatorsFromAssemblyContaining<Program>();
     });  
 
 

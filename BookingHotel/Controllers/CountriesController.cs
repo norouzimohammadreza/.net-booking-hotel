@@ -1,5 +1,7 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.DTOs.Country;
+using BookingHotel.Results;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +29,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> PutCountry(int id, UpdateCountryDto countryDto)
+    public async Task<IActionResult> Put(int id, UpdateCountryDto countryDto)
     { 
        var result = await countriesService.UpdateCountry(id, countryDto);
            return ToActionResult(result);
@@ -35,8 +37,17 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<GetCountryDto>> PostCountry(CreateCountryDto countryDto)
+    public async Task<ActionResult<GetCountryDto>> Post(
+        CreateCountryDto countryDto
+        //[FromServices] IValidator<CreateCountryDto> validator 
+        )
     {
+       // var validationResult = await validator.ValidateAsync(countryDto);
+        //if (!validationResult.IsValid)
+        //{
+          //  return BadRequest(validationResult.Errors);
+        //}
+        
         var result = await countriesService.CreateCountry(countryDto);
         if (!result.IsSuccess)
         {
@@ -47,7 +58,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeleteCountry(int id)
+    public async Task<IActionResult> Delete(int id)
     {
        var result = await countriesService.DeleteCountryDto(id); 
       return ToActionResult(result);
