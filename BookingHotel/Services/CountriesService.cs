@@ -64,8 +64,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
                 return Result.Failure(new Error("Duplicate","Country name already exists"));
             }
 
-            country.Name = countryDto.Name;
-            country.ShortName = countryDto.ShortName;
+            country.Update(countryDto.Name, countryDto.ShortName);
 
             context.Entry(country).State = EntityState.Modified;
         
@@ -90,11 +89,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
             {
                 return Result<GetCountryDto>.Failure(new Error("Conflict","Country already exists"));
             }
-            var country = new Country
-            {
-                Name = countryDto.Name,
-                ShortName = countryDto.ShortName,
-            };
+            var country = new Country(countryDto.Name, countryDto.ShortName);
             context.Countries.Add(country);
             await context.SaveChangesAsync();
             var dto = new GetCountryDto(

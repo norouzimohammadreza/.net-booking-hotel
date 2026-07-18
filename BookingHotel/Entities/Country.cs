@@ -1,14 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookingHotel.Entities;
+﻿namespace BookingHotel.Entities;
 
 public class Country
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public string Name { get; set; }
+    public string Name { get; private set; }
+
+    public string ShortName { get; private set; }
+
+    public List<Hotel> Hotels { get; private set; } = [];
     
-    public string ShortName { get; set; }
+    private Country(){}
     
-    public List<Hotel> Hotels { get; set; } = [];
+    public Country(string name, string shortName)
+    {
+        Name = name;
+        ShortName = shortName;
+    }
+    
+    public void Update(string name, string shortName)
+    {
+        Name = name;
+        ShortName = shortName;
+    }
 }

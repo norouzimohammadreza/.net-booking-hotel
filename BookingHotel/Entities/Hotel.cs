@@ -20,6 +20,8 @@ public class Hotel
 
     public ICollection<Booking> Bookings { get; private set; } = [];
     
+    private Hotel(){}
+
     public Hotel(
         string name,
         string address,
