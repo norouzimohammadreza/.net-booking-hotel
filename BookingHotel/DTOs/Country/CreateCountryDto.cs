@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookingHotel.DTOs.Country;
+﻿namespace BookingHotel.DTOs.Country;
 
 public class CreateCountryDto
 {

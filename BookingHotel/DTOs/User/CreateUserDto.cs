@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookingHotel.DTOs.User;
+﻿namespace BookingHotel.DTOs.User;
 
 public class CreateUserDto
 {
