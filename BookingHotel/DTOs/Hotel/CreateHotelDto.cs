@@ -7,6 +7,7 @@ public class CreateHotelDto
     public string Address { get; set; }
     
     public double Rating { get; set; }
+    public decimal PerNightRating { get; set; }
 
     public int CountryId { get; set; }
 }

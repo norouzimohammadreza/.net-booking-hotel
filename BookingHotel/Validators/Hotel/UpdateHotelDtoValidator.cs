@@ -21,7 +21,10 @@ public class UpdateHotelDtoValidator : AbstractValidator<UpdateHotelDto>
         RuleFor(x => x.Rating)
             .GreaterThanOrEqualTo(0)
             .LessThanOrEqualTo(5);
-
+        
+        RuleFor(x => x.PerNightRating)
+            .GreaterThan(0);
+        
         RuleFor(x => x.CountryId)
             .GreaterThan(0);
     }
