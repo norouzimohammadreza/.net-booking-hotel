@@ -46,12 +46,13 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
         try
         {
             var hotel = new Hotel
-            {
-                Name = hotelDto.Name,
-                Address = hotelDto.Address,
-                Rating = hotelDto.Rating,
-                CountryId = hotelDto.CountryId
-            };
+            (
+                 hotelDto.Name,
+                 hotelDto.Address,
+                 hotelDto.Rating,
+                 hotelDto.PerNightRating,
+                 hotelDto.CountryId
+            );
             context.Hotels.Add(hotel);
             await context.SaveChangesAsync();
 
@@ -84,10 +85,14 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
             {
                 return Result.Failure(new Error("NotFound", "NotFound"));
             }
-            hotel.Name = hotelDto.Name;
-            hotel.Address = hotelDto.Address;
-            hotel.Rating = hotelDto.Rating;
-            hotel.CountryId = hotelDto.CountryId;
+            
+            hotel.Update(
+                hotelDto.Name,
+                hotelDto.Address,
+                hotelDto.Rating,
+                hotelDto.PerNightRating,
+                hotelDto.CountryId
+                );
 
             context.Entry(hotel).State = EntityState.Modified;
             await context.SaveChangesAsync();
