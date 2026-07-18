@@ -1,7 +1,9 @@
 ﻿namespace BookingHotel.DTOs.Booking;
 
-public record UpdateBookingDto(
-    DateOnly CheckIn,
-    DateOnly CheckOut,
-    int Guests
-    );
+public class UpdateBookingDto
+{
+  public DateOnly CheckIn { get; set; }
+  public DateOnly CheckOut { get; set; }
+  public int Guests { get; set; }
+}
+
