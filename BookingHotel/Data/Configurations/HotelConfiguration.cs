@@ -18,6 +18,9 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
 
         builder.Property(h => h.Rating)
             .HasDefaultValue(0);
+        
+        builder.Property(h => h.PerNightRating)
+            .HasDefaultValue(0);
 
         builder.Property(h => h.PerNightRating)
             .HasDefaultValue(0);
