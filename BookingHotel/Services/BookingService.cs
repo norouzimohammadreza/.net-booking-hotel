@@ -77,18 +77,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
         {
             return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
         }
-
-        var nights = createBookingDto.CheckOut.DayNumber - createBookingDto.CheckIn.DayNumber;
-
-        if (nights <= 0)
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","Checkout must be after CheckIn."));
-        }
-        
-        if (createBookingDto.Guests <= 0)
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","Guests must be at least 1."));
-        }
         
         var hotel = await context.Hotels.Where(h=>h.Id == createBookingDto.HotelId).FirstOrDefaultAsync();
 
@@ -108,7 +96,8 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
         {
             return Result<GetBookingDto>.Failure(new Error("Conflict","There is conflict."));
         }
-
+        
+        var nights = createBookingDto.CheckOut.DayNumber - createBookingDto.CheckIn.DayNumber;
         var totalPrice = hotel.PerNightRating * nights;
 
         var booking = new Booking
@@ -147,18 +136,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
         if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
         {
             return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
-        }
-
-        var nights = updateBookingDto.CheckOut.DayNumber - updateBookingDto.CheckIn.DayNumber;
-
-        if (nights <= 0)
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","Checkout must be after CheckIn."));
-        }
-        
-        if (updateBookingDto.Guests <= 0)
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","Guests must be at least 1."));
         }
         
         var overlaps = await context.Bookings.AnyAsync(b =>
