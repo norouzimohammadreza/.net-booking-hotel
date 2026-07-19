@@ -3,6 +3,7 @@ using BookingHotel.Data;
 using BookingHotel.Entities;
 using BookingHotel.Data.Enums;
 using BookingHotel.DTOs.Booking;
+using BookingHotel.DTOs.Pagination;
 using BookingHotel.Results;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,19 +40,24 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
          return Result<IEnumerable<GetBookingDto>>.Success(bookings);
     }
 
-    public async Task<Result<IEnumerable<GetBookingDto>>> GetUserBookings(int hotelId)
+    public async Task<Result<PagedResult<GetBookingDto>>> GetUserBookings(int hotelId,PaginationQuery pagination)
     {
         var userId = usersService.GetUserId();
         
-        var hotelExists = await context.Bookings.AnyAsync(b => b.HotelId == hotelId);
+        var hotelExists = await context.Hotels.AnyAsync(b => b.Id == hotelId);
         if (!hotelExists)
         {
-            return Result<IEnumerable<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
+            return Result<PagedResult<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
         }
+        
+        var totalCount = await context.Bookings
+            .CountAsync(b => b.HotelId == hotelId && b.UserId == userId);
 
         var bookings = await context.Bookings
             .Where(b => b.HotelId == hotelId && b.UserId == userId)
             .OrderBy(b => b.CheckIn)
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
             .Select(b=> new GetBookingDto(
                 b.Id,
                 b.HotelId,
@@ -66,7 +72,15 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             ))
             .ToListAsync();
         
-        return Result<IEnumerable<GetBookingDto>>.Success(bookings);
+        var result = new PagedResult<GetBookingDto>
+        {
+            Items = bookings,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        };
+        
+        return Result<PagedResult<GetBookingDto>>.Success(result);
     }
 
     public async Task<Result<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto)
