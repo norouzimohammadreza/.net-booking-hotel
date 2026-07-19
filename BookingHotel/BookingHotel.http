@@ -1,7 +1,5 @@
 @BookingHotel_HostAddress = http://localhost:5063
 @Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMTYyMDg1YS01MzI0LTQ0ZmUtYWFiZi1jM2I0MDI1ZTQ5MmMiLCJlbWFpbCI6ImFiY2Rlc2ZhYXcydzJzQGV4YW1wbGUuY29tIiwianRpIjoiNjhmYzBmMTItNGVjNC00NTMxLThlZGEtOGEzOWE5Yzc3MWYwIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWJjZGVzZmFhdzJ3MnNAZXhhbXBsZS5jb20iLCJleHAiOjE3ODMyMDM0MTYsImlzcyI6IkJvb2tpbmdIb3RlbEFQSSIsImF1ZCI6IkJvb2tpbmdIb3RlbEFQSUNsaWVudCJ9.HuhjtLVhfQgg0e047S6Zh2FcF8D-ESXaGIUU7ddVNag
-GET {{BookingHotel_HostAddress}}/weatherforecast/
-Accept: application/json
 
 ### 
 GET http://localhost:5063/api/Hotels
