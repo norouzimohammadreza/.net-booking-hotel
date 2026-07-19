@@ -3,7 +3,7 @@
 namespace BookingHotel.DTOs.Country;
 
 public record GetCountryDto(
-    int CountryId,
+    int Id,
     string Name,
     string ShortName,
     List<GetHotelsDto>? Hotels);
