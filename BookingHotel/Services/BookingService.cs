@@ -25,6 +25,8 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
         var bookings = await context.Bookings
             .Where(b => b.HotelId == hotelId)
             .OrderBy(b => b.CheckIn)
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
             .Select(b=> new GetBookingDto(
                 b.Id,
                 b.HotelId,
