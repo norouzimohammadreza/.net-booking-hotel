@@ -1,5 +1,6 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.DTOs.Country;
+using BookingHotel.DTOs.Pagination;
 using BookingHotel.Results;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +15,9 @@ namespace BookingHotel.Controllers;
 public class CountriesController(ICountriesService countriesService) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetCountriesDto>>> GetCountries()
+    public async Task<ActionResult<PagedResult<GetCountriesDto>>> GetCountries([FromQuery]PaginationQuery pagination)
     {
-        var countries = await countriesService.GetCountries();
+        var countries = await countriesService.GetCountries(pagination);
         return ToActionResult(countries);
     }
 

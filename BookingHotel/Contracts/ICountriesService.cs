@@ -1,11 +1,13 @@
 ﻿using BookingHotel.DTOs.Country;
+using BookingHotel.DTOs.Pagination;
 using BookingHotel.Results;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookingHotel.Contracts;
 
 public interface ICountriesService
 {
-    Task<Result<IEnumerable<GetCountriesDto>>> GetCountries(); 
+    Task<Result<PagedResult<GetCountriesDto>>> GetCountries([FromQuery]PaginationQuery pagination); 
     Task<Result<GetCountryDto>> GetCountry(int countryId);
     Task<Result> UpdateCountry(int countryId, UpdateCountryDto countryDto);
     Task<Result<GetCountryDto>> CreateCountry(CreateCountryDto countryDto);

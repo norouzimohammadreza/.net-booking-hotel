@@ -2,22 +2,36 @@
 using BookingHotel.DTOs.Country;
 using BookingHotel.Contracts;
 using BookingHotel.DTOs.Hotel;
+using BookingHotel.DTOs.Pagination;
 using Microsoft.EntityFrameworkCore;
 using BookingHotel.Results;
 using BookingHotel.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookingHotel.Services;
 
 public class CountriesService(BookingHotelDbContext context) : ICountriesService
 {
-    public async Task<Result<IEnumerable<GetCountriesDto>>> GetCountries()
+    public async Task<Result<PagedResult<GetCountriesDto>>> GetCountries([FromQuery]PaginationQuery pagination)
     {
+        var totalCount = await context.Countries
+            .CountAsync();
+        
         var countries = await context
             .Countries
             .Select(c=> new GetCountriesDto(c.Id, c.Name,c.ShortName))
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
             .ToListAsync(); 
         
-        return Result<IEnumerable<GetCountriesDto>>.Success(countries);
+        var result = new PagedResult<GetCountriesDto>
+        {
+            Items = countries,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        };
+        return Result<PagedResult<GetCountriesDto>>.Success(result);
     }
 
     public async Task<Result<GetCountryDto>> GetCountry(int id)
