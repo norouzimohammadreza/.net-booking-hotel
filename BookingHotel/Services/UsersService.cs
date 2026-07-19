@@ -84,8 +84,15 @@ public class UsersService(UserManager<IdentityUser> userManager, IConfiguration 
 
     public string GetUserId()
     {
-        return httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
                ?? httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
                ?? string.Empty ;
+
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        return userId;
     }
 }
