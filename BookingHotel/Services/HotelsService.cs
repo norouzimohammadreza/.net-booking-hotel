@@ -1,6 +1,7 @@
 ﻿using BookingHotel.Contracts;
 using BookingHotel.Data;
 using BookingHotel.DTOs.Hotel;
+using BookingHotel.DTOs.Pagination;
 using Microsoft.EntityFrameworkCore;
 using BookingHotel.Results;
 using BookingHotel.Entities;
@@ -9,8 +10,11 @@ namespace BookingHotel.Services;
 
 public class HotelsService(BookingHotelDbContext context) : IHotelsService
 {
-    public async Task<Result<IEnumerable<GetHotelsDto>>> GetHotels()
+    public async Task<Result<PagedResult<GetHotelsDto>>> GetHotels(PaginationQuery pagination)
     {
+        var totalCount = await context.Countries
+            .CountAsync();
+        
         var hotels = await context
             .Hotels
             .Select(h=> new GetHotelsDto(
@@ -19,9 +23,19 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
                 h.Address,
                 h.Rating,
                 h.CountryId))
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
             .ToListAsync();
         
-        return Result<IEnumerable<GetHotelsDto>>.Success(hotels);
+        var result = new PagedResult<GetHotelsDto>
+        {
+            Items = hotels,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        };
+        
+        return Result<PagedResult<GetHotelsDto>>.Success(result);
     }
 
     public async Task<Result<GetHotelDto>> GetHotel(int id)
