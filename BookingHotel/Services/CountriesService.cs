@@ -12,13 +12,14 @@ namespace BookingHotel.Services;
 
 public class CountriesService(BookingHotelDbContext context) : ICountriesService
 {
-    public async Task<Result<PagedResult<GetCountriesDto>>> GetCountries([FromQuery]PaginationQuery pagination)
+    public async Task<Result<PagedResult<GetCountriesDto>>> GetCountries(PaginationQuery pagination)
     {
         var totalCount = await context.Countries
             .CountAsync();
         
         var countries = await context
             .Countries
+            .AsNoTracking()
             .Select(c=> new GetCountriesDto(c.Id, c.Name,c.ShortName))
             .Skip((pagination.Page - 1) * pagination.PageSize)
             .Take(pagination.PageSize)
@@ -38,6 +39,7 @@ public class CountriesService(BookingHotelDbContext context) : ICountriesService
     {
         var country = await context
             .Countries
+            .AsNoTracking()
             .Where(c=> c.Id == id)
             .Select(c=> new GetCountryDto(
                 c.Id,

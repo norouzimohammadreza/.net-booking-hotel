@@ -12,11 +12,12 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
 {
     public async Task<Result<PagedResult<GetHotelsDto>>> GetHotels(PaginationQuery pagination)
     {
-        var totalCount = await context.Countries
+        var totalCount = await context.Hotels
             .CountAsync();
         
         var hotels = await context
             .Hotels
+            .AsNoTracking()
             .Select(h=> new GetHotelsDto(
                 h.Id,
                 h.Name,
@@ -42,6 +43,7 @@ public class HotelsService(BookingHotelDbContext context) : IHotelsService
     {
       var hotel = await context
             .Hotels
+            .AsNoTracking()
             .Where(h => h.Id == id)
             .Select(h => new GetHotelDto(
                 h.Id,

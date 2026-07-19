@@ -23,6 +23,7 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             .CountAsync(b => b.HotelId == hotelId);
         
         var bookings = await context.Bookings
+            .AsNoTracking()
             .Where(b => b.HotelId == hotelId)
             .OrderBy(b => b.CheckIn)
             .Skip((pagination.Page - 1) * pagination.PageSize)
@@ -66,6 +67,7 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             .CountAsync(b => b.HotelId == hotelId && b.UserId == userId);
 
         var bookings = await context.Bookings
+            .AsNoTracking()
             .Where(b => b.HotelId == hotelId && b.UserId == userId)
             .OrderBy(b => b.CheckIn)
             .Skip((pagination.Page - 1) * pagination.PageSize)
