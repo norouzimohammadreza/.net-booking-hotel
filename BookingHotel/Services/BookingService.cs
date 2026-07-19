@@ -42,8 +42,8 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
     public async Task<Result<IEnumerable<GetBookingDto>>> GetUserBookings(int hotelId)
     {
         var userId = usersService.GetUserId();
+        
         var hotelExists = await context.Bookings.AnyAsync(b => b.HotelId == hotelId);
-
         if (!hotelExists)
         {
             return Result<IEnumerable<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
@@ -72,14 +72,8 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
     public async Task<Result<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto)
     {
         var userId = usersService.GetUserId();
-
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
-        }
         
         var hotel = await context.Hotels.Where(h=>h.Id == createBookingDto.HotelId).FirstOrDefaultAsync();
-
         if (hotel == null)
         {
             return Result<GetBookingDto>.Failure(new Error("NotFound","Hotel not found"));
@@ -130,11 +124,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
     {
         var userId = usersService.GetUserId();
 
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-        {
-            return Result<GetBookingDto>.Failure(new Error("Validation","User is required."));
-        }
-        
         var overlaps = await context.Bookings.AnyAsync(b =>
             b.HotelId == hotelId
             && b.Status != BookingStatus.Cancelled
@@ -192,11 +181,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
     public async Task<Result> CancelBooking(int hotelId, int bookingId)
     {
         var userId = usersService.GetUserId();
-
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-        {
-            return Result.Failure(new Error("Validation","User is required."));
-        }
         
         var booking = await context.Bookings
             .Include(booking => booking.Hotel!)
@@ -222,13 +206,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
 
     public async Task<Result> AdminCancelBooking(int hotelId, int bookingId)
     {
-        var userId = usersService.GetUserId();
-
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-        {
-            return Result.Failure(new Error("Validation","User is required."));
-        }
-        
         var booking = await context.Bookings
             .Include(booking => booking.Hotel!)
             .FirstOrDefaultAsync(b =>
@@ -252,13 +229,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
 
     public async Task<Result> AdminConfirmBooking(int hotelId, int bookingId)
     {
-        var userId = usersService.GetUserId();
-
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-        {
-            return Result.Failure(new Error("Validation","User is required."));
-        }
-        
         var booking = await context.Bookings
             .Include(booking => booking.Hotel!)
             .FirstOrDefaultAsync(b =>

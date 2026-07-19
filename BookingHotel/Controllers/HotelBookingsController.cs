@@ -22,7 +22,7 @@ public class HotelBookingsController(IBookingService bookingService) : BaseApiCo
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetBookingDto>>> GetUserBookings([FromRoute] int hotelId)
     {
-        var result = await bookingService.GetBookingsForHotel(hotelId);
+        var result = await bookingService.GetUserBookings(hotelId);
         return ToActionResult(result);
     }
     
