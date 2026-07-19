@@ -15,9 +15,9 @@ public class HotelBookingsController(IBookingService bookingService) : BaseApiCo
 {
     [HttpGet("/admin")]
     [HotelOrSystemAdmin]
-    public async Task<ActionResult<IEnumerable<GetBookingDto>>> GetBookings([FromRoute] int hotelId)
+    public async Task<ActionResult<PagedResult<GetBookingDto>>> GetBookings([FromRoute] int hotelId,[FromQuery]PaginationQuery pagination)
     {
-        var result = await bookingService.GetBookingsForHotel(hotelId);
+        var result = await bookingService.GetBookingsForHotel(hotelId,pagination);
         return ToActionResult(result);
     }
     

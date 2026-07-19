@@ -7,7 +7,7 @@ namespace BookingHotel.Contracts;
 
 public interface IBookingService
 {
-     Task<Result<IEnumerable<GetBookingDto>>> GetBookingsForHotel(int hotelId);
+     Task<Result<PagedResult<GetBookingDto>>> GetBookingsForHotel(int hotelId,PaginationQuery pagination);
      Task<Result<PagedResult<GetBookingDto>>> GetUserBookings(int hotelId,PaginationQuery pagination);
      Task<Result<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto);
      Task<Result<GetBookingDto>> UpdateBooking(        

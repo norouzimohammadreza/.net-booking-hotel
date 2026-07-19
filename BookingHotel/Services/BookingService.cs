@@ -11,15 +11,17 @@ namespace BookingHotel.Services;
 
 public class BookingService(BookingHotelDbContext context, IUsersService usersService) : IBookingService
 {
-    public async Task<Result<IEnumerable<GetBookingDto>>> GetBookingsForHotel(int hotelId)
+    public async Task<Result<PagedResult<GetBookingDto>>> GetBookingsForHotel(int hotelId,PaginationQuery pagination)
     {
-        var hotelExists = await context.Bookings.AnyAsync(b => b.HotelId == hotelId);
-
+        var hotelExists = await context.Hotels.AnyAsync(b => b.Id == hotelId);
         if (!hotelExists)
         {
-            return Result<IEnumerable<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
+            return Result<PagedResult<GetBookingDto>>.Failure(new Error("NotFound","Hotel not found"));
         }
-
+        
+        var totalCount = await context.Bookings
+            .CountAsync(b => b.HotelId == hotelId);
+        
         var bookings = await context.Bookings
             .Where(b => b.HotelId == hotelId)
             .OrderBy(b => b.CheckIn)
@@ -37,7 +39,15 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
                 ))
             .ToListAsync();
         
-         return Result<IEnumerable<GetBookingDto>>.Success(bookings);
+        var result = new PagedResult<GetBookingDto>
+        {
+            Items = bookings,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        };
+        
+         return Result<PagedResult<GetBookingDto>>.Success(result);
     }
 
     public async Task<Result<PagedResult<GetBookingDto>>> GetUserBookings(int hotelId,PaginationQuery pagination)
