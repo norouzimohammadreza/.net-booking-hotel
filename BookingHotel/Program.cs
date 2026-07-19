@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BookingHotel.Contracts;
 using BookingHotel.Data;
+using BookingHotel.Middlewares;
 using BookingHotel.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -67,6 +68,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
