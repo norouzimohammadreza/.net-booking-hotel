@@ -97,19 +97,16 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result<GetBookingDto>.Failure(new Error("Conflict","There is conflict."));
         }
         
-        var nights = createBookingDto.CheckOut.DayNumber - createBookingDto.CheckIn.DayNumber;
-        var totalPrice = hotel.PerNightRating * nights;
-
         var booking = new Booking
-        {
-            HotelId = createBookingDto.HotelId,
-            UserId = userId,
-            CheckIn = createBookingDto.CheckIn,
-            CheckOut = createBookingDto.CheckOut,
-            Guests = createBookingDto.Guests,
-            TotalPrice = totalPrice,
-            Status = BookingStatus.Pending
-        };
+        (
+            createBookingDto.HotelId,
+            userId,
+            createBookingDto.CheckIn,
+            createBookingDto.CheckOut,
+            createBookingDto.Guests,
+            hotel.PerNightRating
+        );
+        
         context.Add(booking);
         await context.SaveChangesAsync();
 
@@ -167,12 +164,13 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result<GetBookingDto>.Failure(new Error("Conflict","Cancelled booking"));
         }
 
-        var perNight = booking.Hotel!.PerNightRating;
-        booking.CheckIn = updateBookingDto.CheckIn;
-        booking.CheckOut = updateBookingDto.CheckOut;
-        booking.Guests = updateBookingDto.Guests;
-        booking.TotalPrice = perNight * (updateBookingDto.CheckOut.DayNumber - updateBookingDto.CheckIn.DayNumber);
-        booking.UpdatedAt = DateTime.UtcNow;
+        booking.Update(
+            updateBookingDto.CheckIn,
+            updateBookingDto.CheckOut,
+            updateBookingDto.Guests,
+            booking.Hotel!.PerNightRating
+            );
+
         await context.SaveChangesAsync();
 
         var updated = new GetBookingDto(
@@ -217,8 +215,7 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result.Failure(new Error("Conflict","Cancelled booking"));
         }
         
-        booking.Status = BookingStatus.Cancelled;
-        booking.UpdatedAt = DateTime.UtcNow;
+        booking.Cancel();
         await context.SaveChangesAsync();
         return Result.Success(); 
     }
@@ -232,13 +229,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result.Failure(new Error("Validation","User is required."));
         }
         
-        var isHotelAdmin = await context.HotelAdmins.AnyAsync(q=> q.HotelId == hotelId && q.UserId == userId);
-
-        if (!isHotelAdmin)
-        {
-            return Result.Failure(new Error("Forbidden","User is not hotel admin."));
-        }
-        
         var booking = await context.Bookings
             .Include(booking => booking.Hotel!)
             .FirstOrDefaultAsync(b =>
@@ -255,8 +245,7 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result.Failure(new Error("Conflict","Cancelled booking"));
         }
         
-        booking.Status = BookingStatus.Cancelled;
-        booking.UpdatedAt = DateTime.UtcNow;
+        booking.Cancel();
         await context.SaveChangesAsync();
         return Result.Success(); 
     }
@@ -270,13 +259,6 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result.Failure(new Error("Validation","User is required."));
         }
         
-        var isHotelAdmin = await context.HotelAdmins.AnyAsync(q=> q.HotelId == hotelId && q.UserId == userId);
-
-        if (!isHotelAdmin)
-        {
-            return Result.Failure(new Error("Forbidden","User is not hotel admin."));
-        }
-        
         var booking = await context.Bookings
             .Include(booking => booking.Hotel!)
             .FirstOrDefaultAsync(b =>
@@ -293,8 +275,7 @@ public class BookingService(BookingHotelDbContext context, IUsersService usersSe
             return Result.Failure(new Error("Conflict","Cancelled booking"));
         }
         
-        booking.Status = BookingStatus.Confirmed;
-        booking.UpdatedAt = DateTime.UtcNow;
+        booking.Confirm();
         await context.SaveChangesAsync();
         return Result.Success(); 
     }
