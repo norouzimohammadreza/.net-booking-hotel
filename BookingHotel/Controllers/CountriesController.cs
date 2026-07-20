@@ -54,7 +54,7 @@ public class CountriesController(ICountriesService countriesService) : BaseApiCo
         {
            return MapErrorsToResponse(result.Errors);
         }
-        return CreatedAtAction("GetCountry", new { id = result.Value!.CountryId }, result.Value);
+        return CreatedAtAction("GetCountry", new { id = result.Value!.Id }, result.Value);
     }
 
     [HttpDelete("{id}")]
